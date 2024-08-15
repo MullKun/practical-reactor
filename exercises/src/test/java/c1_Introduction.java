@@ -42,7 +42,7 @@ public class c1_Introduction extends IntroductionBase {
     public void hello_world() {
         Mono<String> serviceResult = hello_world_service();
 
-        String result = serviceResult.block(); //todo: change this line only
+        String result = serviceResult.block();
 
         assertEquals("Hello World!", result);
     }
@@ -57,7 +57,6 @@ public class c1_Introduction extends IntroductionBase {
             Mono<String> serviceResult = unresponsiveService();
 
             String result = serviceResult.block(Duration.ofNanos(1));
-            //todo: change this line only
         });
 
         String expectedMessage = "Timeout on blocking read for 1";
@@ -74,7 +73,7 @@ public class c1_Introduction extends IntroductionBase {
     public void empty_service() {
         Mono<String> serviceResult = emptyService();
 
-        Optional<String> optionalServiceResult = serviceResult.blockOptional(); //todo: change this line only
+        Optional<String> optionalServiceResult = serviceResult.blockOptional();
 
         assertTrue(optionalServiceResult.isEmpty());
         assertTrue(emptyServiceIsCalled.get());
@@ -91,7 +90,7 @@ public class c1_Introduction extends IntroductionBase {
     public void multi_result_service() {
         Flux<String> serviceResult = multiResultService();
 
-        String result = serviceResult.blockFirst(); //todo: change this line only
+        String result = serviceResult.blockFirst();
 
         assertEquals("valid result", result);
     }
@@ -105,7 +104,7 @@ public class c1_Introduction extends IntroductionBase {
     public void fortune_top_five() {
         Flux<String> serviceResult = fortuneTop5();
 
-        List<String> results = serviceResult.collectList().block(); //todo: change this line only
+        List<String> results = serviceResult.collectList().block();
 
         assertEquals(Arrays.asList("Walmart", "Amazon", "Apple", "CVS Health", "UnitedHealth Group"), results);
         assertTrue(fortuneTop5ServiceIsCalled.get());
@@ -131,7 +130,6 @@ public class c1_Introduction extends IntroductionBase {
         serviceResult
                 .doOnNext(companyList::add)
                 .subscribe()
-        //todo: add an operator here, don't use any blocking operator!
         ;
 
         Thread.sleep(1000); //bonus: can you explain why this line is needed?
@@ -155,7 +153,6 @@ public class c1_Introduction extends IntroductionBase {
         CopyOnWriteArrayList<String> companyList = new CopyOnWriteArrayList<>();
 
         fortuneTop5().doOnNext(companyList::add).doOnComplete(() -> serviceCallCompleted.set(true)).subscribe()
-        //todo: change this line only
         ;
 
         Thread.sleep(1000);
