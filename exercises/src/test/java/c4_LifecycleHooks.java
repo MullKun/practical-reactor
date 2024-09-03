@@ -188,13 +188,16 @@ public class c4_LifecycleHooks extends LifecycleHooksBase {
                                  .doFirst(() -> sideEffects.add("one"));
 
         List<String> orderOfExecution =
-                Arrays.asList("todo", "todo", "todo");
+                Arrays.asList("one", "two", "three");
 
         StepVerifier.create(just)
                     .expectNext(true)
                     .verifyComplete();
 
         Assertions.assertEquals(sideEffects, orderOfExecution);
+        Assertions.assertEquals(orderOfExecution.get(0), "one");
+        Assertions.assertEquals(orderOfExecution.get(1), "two");
+        Assertions.assertEquals(orderOfExecution.get(2), "three");
     }
 
     /**
@@ -212,13 +215,14 @@ public class c4_LifecycleHooks extends LifecycleHooksBase {
         CopyOnWriteArrayList<String> signals = new CopyOnWriteArrayList<>();
 
         Flux<Integer> flux = Flux.just(1, 2, 3)
-                //todo: change this line only
-                ;
+                .materialize()
+                .doOnNext(signal-> signals.add(signal.getType().name()))
+                .dematerialize();
 
         StepVerifier.create(flux)
                     .expectNextCount(3)
                     .verifyComplete();
 
-        Assertions.assertEquals(signals, Arrays.asList("ON_NEXT", "ON_NEXT", "ON_NEXT", "ON_COMPLETE"));
+        Assertions.assertEquals(Arrays.asList("ON_NEXT", "ON_NEXT", "ON_NEXT", "ON_COMPLETE"), signals);
     }
 }
